@@ -88,7 +88,7 @@ export default class Snake {
         //console.log('head:', headMidX, headMidY)
         if (this.#firstCheck) {
             this.#firstCheck = false;
-            return;
+            return false;
         }
         for (let i = 1; i < body.length; i++) {
             const {midX, midY} = this.#getBodyPartMid(body[i]);
