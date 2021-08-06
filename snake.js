@@ -1,7 +1,8 @@
 import Food from "./food.js";
 
-const bodyPartLen = 30;//this is global to be used in constructor
+const bodyPartLen = 20;//this is global to be used in constructor
 export default class Snake {
+    #firstCheck = true;
     constructor(x, y, len, p5context) {
         this.x = x;
         this.y = y;
@@ -54,7 +55,7 @@ export default class Snake {
         }
     }
     update(food) {
-        const speed = this.p5context.width * 1.3 / 100;
+        const speed = bodyPartLen;
         const dirDeltas = new Map([
             [Snake.DIRS.LEFT, { x: -speed, y: 0 }],
             [Snake.DIRS.RIGHT, { x: speed, y: 0 }],
@@ -63,29 +64,42 @@ export default class Snake {
         ]);
         this.x += dirDeltas.get(this.dir).x;
         this.y += dirDeltas.get(this.dir).y;
-        this.body.push({
+        this.body.splice(0, 0, {
             x: this.x,
             y: this.y,
         });
         if (!this.#checkFeed(food)) {
-            this.body.shift();
+            this.body.pop();
         } else {
             food.setPos();
         }
     }
     #checkFeed(food) {
-        const { midX, midY } = this.#getMid();
+        const { midX, midY } = this.#getBodyPartMid(this);
         return (midX - food.x) * (midX - food.x) + (midY - food.y) * (midY - food.y) <= Food.RADIUS * Food.RADIUS;//*/
     }
     checkDead() {
         const { width, height } = this.p5context;
-        if (!(this.x >= 0 && this.y >= 0 && this.x <= width && this.y <= height)) {
+        const {midX: headMidX, midY: headMidY} = this.#getBodyPartMid(this);
+        if (!(headMidX >= 0 && headMidY >= 0 && headMidX <= width && headMidY <= height)) {
             return true;
+        }
+        const {body} = this;
+        //console.log('head:', headMidX, headMidY)
+        if (this.#firstCheck) {
+            this.#firstCheck = false;
+            return;
+        }
+        for (let i = 1; i < body.length; i++) {
+            const {midX, midY} = this.#getBodyPartMid(body[i]);
+            //console.log('part:', midX, midY)
+            if (midX === headMidX && midY === headMidY) {
+                return true;
+            }
         }
         return false;
     }
-    #getMid() {
-        const { x, y } = this;
+    #getBodyPartMid({x, y}) {
         const midX = x + bodyPartLen / 2;
         const midY = y + bodyPartLen / 2;
         return { midX, midY };
