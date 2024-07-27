@@ -1,17 +1,10 @@
 import "https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js";
 import Snake from "./snake.js";
 import Food from "./food.js";
+import { syncSleep } from "./utils.js";
+
 const canvasDad = document.querySelector('#canvasDad');
 let snake, food;
-
-const syncSleep = (waitTime) => {
-    let startDate = new Date(), currDate = null;
-    do {
-        currDate = new Date();
-    } while (currDate - startDate < waitTime);
-};
-
-
 
 const initP5 = p5context => {
     const handleInput = () => {
