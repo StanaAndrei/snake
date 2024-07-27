@@ -18,6 +18,7 @@ export default class Snake {
     }
     static get DIRS() {
         const dirs = {
+            NONE: 0,
             LEFT: 1,
             RIGHT: 2,
             UP: 3,

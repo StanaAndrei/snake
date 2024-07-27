@@ -2,29 +2,10 @@ import "https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js";
 import Snake from "./snake.js";
 import Food from "./food.js";
 import { syncSleep } from "./utils.js";
+import { getKeyPressed } from "./input-handler.js";
 
-const canvasDad = document.querySelector('#canvasDad');
-let snake, food;
-
-const initP5 = p5context => {
-    const handleInput = () => {
-        const {
-            LEFT_ARROW,
-            RIGHT_ARROW,
-            UP_ARROW, 
-            DOWN_ARROW
-        } = p5context;
-        if (p5context.keyIsDown(LEFT_ARROW)) {
-            snake.changeDir(Snake.DIRS.LEFT);
-        } else if (p5context.keyIsDown(RIGHT_ARROW)) {
-            snake.changeDir(Snake.DIRS.RIGHT);
-        } else if (p5context.keyIsDown(UP_ARROW)) {
-            snake.changeDir(Snake.DIRS.UP);
-        } else if (p5context.keyIsDown(DOWN_ARROW)) {
-            snake.changeDir(Snake.DIRS.DOWN);
-        }
-    }
-
+new p5(p5context => {
+    let snake, food;
     p5context.setup = () => {
         p5context.createCanvas(window.innerWidth - 150, window.innerHeight - 150);
         window.focus();
@@ -43,9 +24,7 @@ const initP5 = p5context => {
         snake.update(food);
         snake.draw(p5context);
         food.draw();//*/
-        handleInput();
+        snake.changeDir(getKeyPressed(p5context));
         syncSleep(50);
     }
-}
-
-new p5(initP5, canvasDad);
+}, document.querySelector('#canvasDad'));
